@@ -1,6 +1,11 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import debounce from 'lodash.debounce';
+import getRefs from './js/refs';
+import fetchCountries from './js/searchСountry';
+import createCountriesList from './js/listCountry'
+import createCountryInfo from './js/listCountry';
+
 
 const DEBOUNCE_DELAY = 300;
 
@@ -58,57 +63,3 @@ function clearAll() {
     refs.countryInfo.innerHTML = '';
 }
 
-
-function createCountryInfo({
-    flags: { svg },
-    name: { official },
-    capital,
-    population,
-    languages,
-}) {
-
-    const langs = Object.values(languages).join(', ');
-    return `
-    <div class="info__item-country">
-    <div class="block-img">
-        <img class="img_item" src="${svg}" alt="${official}"/>
-        <h2>${official}</h2>
-    </div>
-        <div class="info__block">
-            <p><b>Capital:</b> ${capital}</p>
-            <p><b>Population:</b> ${population}</p>
-            <p><b>Languages:</b> ${langs}</p>
-        </div>
-    </div>
-    `;
-}
-
-
-const BASE_API = 'https://restcountries.com/v3.1/all/';
-const FIELDS = `?fields=name,capital,population,flags,languages`;
-
-function fetchCountries(valueNormalized) {
-    return fetch(`${BASE_API}${FIELDS}`).then(respons => respons.json());
-}
-
-
-function getRefs() {
-    return {
-    countryInputEl: document.querySelector('#search-box'),
-    countryList: document.querySelector('.country-list'),
-    countryInfo: document.querySelector('.country-info'),
-    };
-}
-
-
-function createCountriesList(countries) {
-    return countries
-    .map(
-        ({ flags: { svg }, name: { official } }) => `
-        <li class="list__country">
-        <img class="img_item" src="${svg}" alt="${official}"/>
-        <h4>${official}</h4>
-        </li>
-        `
-    ).join('');
-}
